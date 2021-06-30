@@ -207,6 +207,9 @@ int mosquitto_main_loop(struct mosquitto__listener_sock *listensock, int listens
 
 		session_expiry__check();
 		will_delay__check();
+
+		db__message_timeout_check(db, db->config->retry_interval);
+
 #ifdef WITH_PERSISTENCE
 		if(db.config->persistence && db.config->autosave_interval){
 			if(db.config->autosave_on_changes){

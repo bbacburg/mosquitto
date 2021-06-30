@@ -23,7 +23,6 @@ Contributors:
 #include "mosquitto.h"
 #include "logging_mosq.h"
 #include "memory_mosq.h"
-#include "messages_mosq.h"
 #include "mqtt_protocol.h"
 #include "net_mosq.h"
 #include "packet_mosq.h"
@@ -118,7 +117,6 @@ int handle__connack(struct mosquitto *mosq)
 				mosq->state = mosq_cs_active;
 			}
 			pthread_mutex_unlock(&mosq->state_mutex);
-			message__retry_check(mosq);
 			return MOSQ_ERR_SUCCESS;
 		case 1:
 		case 2:

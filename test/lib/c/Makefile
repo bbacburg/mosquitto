@@ -28,6 +28,7 @@ SRC = \
 	03-publish-c2b-qos1-disconnect.c \
 	03-publish-c2b-qos1-len.c \
 	03-publish-c2b-qos1-receive-maximum.c \
+	03-publish-c2b-qos1-timeout.c \
 	03-publish-c2b-qos2-disconnect.c \
 	03-publish-c2b-qos2-len.c \
 	03-publish-c2b-qos2-maximum-qos-0.c \
@@ -35,6 +36,7 @@ SRC = \
 	03-publish-c2b-qos2-pubrec-error.c \
 	03-publish-c2b-qos2-receive-maximum-1.c \
 	03-publish-c2b-qos2-receive-maximum-2.c \
+	03-publish-c2b-qos2-timeout.c \
 	03-publish-c2b-qos2.c \
 	03-publish-qos0-no-payload.c \
 	03-publish-qos0.c \

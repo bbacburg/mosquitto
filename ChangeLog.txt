@@ -1,3 +1,17 @@
+2.0.11 Jacobs Custom - 2021-06-28
+
+Reverted change in version 1.5 that stated:
+"Outgoing messages with QoS>1 are no longer retried after a timeout period.
+  Messages will be retried when a client reconnects.  This change in behaviour
+  can be justified by considering when the timeout may have occurred.
+  * If a connection is unreliable and has dropped, but without one end
+    noticing, the messages will be retried on reconnection. Sending
+    additional PUBLISH or PUBREL would not have changed anything.
+  * If a client is overloaded/unable to respond/has a slow connection then
+    sending additional PUBLISH or PUBREL would not help the client catch
+    up. Once the backlog has cleared the client will respond. If it is not
+    able to catch up, sending additional duplicates would not help either."
+
 2.0.11 - 2021-06-08
 ===================
 
@@ -13,7 +27,7 @@ Broker:
   Closes #2207.
 - Improve QoS 0 outgoing packet queueing.
 - Fix non-reachable bridge blocking the broker on Windows. Closes #2172.
-- Fix possible corruption of pollfd array on Windows when bridges were 
+- Fix possible corruption of pollfd array on Windows when bridges were
   reconnecting. Closes #2173.
 - Fix QoS 0 messages not being queued when `queue_qos0_messages` was enabled.
   Closes #2224.
@@ -242,7 +256,7 @@ Client library:
 Build:
 - `install` Makefile target should depend on `all`, not `mosquitto`, to ensure
   that man pages are always built. Closes #1989.
-- Fixes for lots of minor build warnings highlighted by Visual Studio. 
+- Fixes for lots of minor build warnings highlighted by Visual Studio.
 
 Apps:
 - Disallow control characters in mosquitto_passwd usernames.
@@ -603,7 +617,7 @@ Broker:
   native version. Closes #1684.
 - Fix possible assert crash associated with bridge reconnecting when compiled
   without epoll support. Closes #1700.
- 
+
 Client library:
 - Don't treat an unexpected PUBACK, PUBREL, or PUBCOMP as a fatal error.
   Issue #1629.

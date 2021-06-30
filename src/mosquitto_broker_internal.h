@@ -291,6 +291,7 @@ struct mosquitto__config {
 	bool queue_qos0_messages;
 	bool per_listener_settings;
 	bool retain_available;
+	int retry_interval;
 	bool set_tcp_nodelay;
 	int sys_interval;
 	bool upgrade_outgoing_qos;
@@ -658,6 +659,8 @@ void db__msg_store_ref_dec(struct mosquitto_msg_store **store);
 void db__msg_store_clean(void);
 void db__msg_store_compact(void);
 void db__msg_store_free(struct mosquitto_msg_store *store);
+/* Check all messages waiting on a client reply and resend if timeout has been exceeded. */
+int db__message_timeout_check(struct mosquitto_db *db, unsigned int timeout);
 int db__message_reconnect_reset(struct mosquitto *context);
 bool db__ready_for_flight(struct mosquitto *context, enum mosquitto_msg_direction dir, int qos);
 bool db__ready_for_queue(struct mosquitto *context, int qos, struct mosquitto_msg_data *msg_data);

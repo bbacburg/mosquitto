@@ -309,6 +309,8 @@ struct mosquitto {
 #  endif
 	void *userdata;
 	bool in_callback;
+	unsigned int message_retry;
+    time_t last_retry_check;
 	struct mosquitto_msg_data msgs_in;
 	struct mosquitto_msg_data msgs_out;
 	void (*on_connect)(struct mosquitto *, void *userdata, int rc);

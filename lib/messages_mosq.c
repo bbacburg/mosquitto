@@ -171,7 +171,7 @@ void message__reconnect_reset(struct mosquitto *mosq, bool update_quota_only)
 			util__decrement_send_quota(mosq);
 			if (update_quota_only == false){
 				if(message->msg.qos == 1){
-					message->state = mosq_ms_publish_qos1;
+					message->state = mosq_ms_wait_for_puback;
 				}else if(message->msg.qos == 2){
 					if(message->state == mosq_ms_wait_for_pubrec){
 						message->state = mosq_ms_publish_qos2;
@@ -285,27 +285,28 @@ void message__retry_check(struct mosquitto *mosq)
 	pthread_mutex_lock(&mosq->msgs_out.mutex);
 #endif
 
-	DL_FOREACH(mosq->msgs_out.inflight, msg){
-		switch(msg->state){
-			case mosq_ms_publish_qos1:
-			case mosq_ms_publish_qos2:
-				msg->timestamp = now;
-				msg->dup = true;
-				send__publish(mosq, (uint16_t)msg->msg.mid, msg->msg.topic, (uint32_t)msg->msg.payloadlen, msg->msg.payload, (uint8_t)msg->msg.qos, msg->msg.retain, msg->dup, msg->properties, NULL, 0);
-				break;
-			case mosq_ms_wait_for_pubrel:
-				msg->timestamp = now;
-				msg->dup = true;
-				send__pubrec(mosq, (uint16_t)msg->msg.mid, 0, NULL);
-				break;
-			case mosq_ms_resend_pubrel:
-			case mosq_ms_wait_for_pubcomp:
-				msg->timestamp = now;
-				msg->dup = true;
-				send__pubrel(mosq, (uint16_t)msg->msg.mid, NULL);
-				break;
-			default:
-				break;
+	while(messages){
+		if(messages->timestamp + mosq->message_retry < now){
+			switch(messages->state){
+				case mosq_ms_wait_for_puback:
+				case mosq_ms_wait_for_pubrec:
+					messages->timestamp = now;
+					messages->dup = true;
+					send__publish(mosq, messages->msg.mid, messages->msg.topic, messages->msg.payloadlen, messages->msg.payload, messages->msg.qos, messages->msg.retain, messages->dup);
+					break;
+				case mosq_ms_wait_for_pubrel:
+					messages->timestamp = now;
+					messages->dup = true;
+					send__pubrec(mosq, messages->msg.mid);
+					break;
+				case mosq_ms_wait_for_pubcomp:
+					messages->timestamp = now;
+					messages->dup = true;
+					send__pubrel(mosq, messages->msg.mid);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 #ifdef WITH_THREADING
@@ -316,8 +317,8 @@ void message__retry_check(struct mosquitto *mosq)
 
 void mosquitto_message_retry_set(struct mosquitto *mosq, unsigned int message_retry)
 {
-	UNUSED(mosq);
-	UNUSED(message_retry);
+	assert(mosq);
+	if(mosq) mosq->message_retry = message_retry;
 }
 
 int message__out_update(struct mosquitto *mosq, uint16_t mid, enum mosquitto_msg_state state, int qos)

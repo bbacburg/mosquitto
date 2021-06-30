@@ -170,7 +170,7 @@
 					<para>Reloaded on reload signal. The currently loaded ACLs
 						will be freed and reloaded. Existing subscriptions will
 						be affected after the reload.</para>
-					<para>See also 
+					<para>See also
 						<ulink url="https://mosquitto.org/documentation/dynamic-security/"/>
 					</para>
 				</listitem>
@@ -276,7 +276,7 @@
 						alongsize <option>auth_plugin</option>, the plugin
 						checks will run after the built in checks.</para>
 					<para>Not currently reloaded on reload signal.</para>
-					<para>See also 
+					<para>See also
 						<ulink url="https://mosquitto.org/documentation/dynamic-security/"/>
 					</para>
 				</listitem>
@@ -479,7 +479,7 @@ D.conf
 					<para>Send log messages to a particular destination.
 						Possible destinations are: <option>stdout</option>
 						<option>stderr</option> <option>syslog</option>
-						<option>topic</option> <option>file</option> 
+						<option>topic</option> <option>file</option>
 						<option>dlt</option>.</para>
 					<para><option>stdout</option> and
 						<option>stderr</option> log to the console on the
@@ -938,6 +938,16 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 
 					<para>This option applies globally.</para>
 
+					<para>Reloaded on reload signal.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><option>retry_interval</option> <replaceable>seconds</replaceable></term>
+				<listitem>
+					<para>The integer number of seconds after a QoS=1 or QoS=2
+						message has been sent that mosquitto will wait before
+						retrying when no response is received. If unset,
+						defaults to 20 seconds.</para>
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>

@@ -101,6 +101,12 @@ test : test-compile 01 02 03 04 05 06 07 08 09 10 11 12 13 14
 	./03-publish-qos1.py
 	./03-publish-qos2-max-inflight.py
 	./03-publish-qos2.py
+	./03-publish-b2c-timeout-qos1.py
+	./03-publish-c2b-timeout-qos2.py
+	./03-publish-b2c-timeout-qos2.py
+
+
+
 
 04 :
 	./04-retain-check-source-persist-diff-port.py
