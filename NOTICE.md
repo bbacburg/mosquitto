@@ -1,6 +1,10 @@
-# Notices for Mosquitto
+# Notices for Jacobs Custom Mosquitto
 
-This content is produced and maintained by the Eclipse Mosquitto project.
+This content is a modified version of the original Mosquitto software. It is produced and maintained by Jacobs Technology Inc.
+This content does not include any warranties and conditions, express and implied, offered by the original Contributors.
+The original Contributors are excluded from all liability for damages.
+
+The original Mosquitto software is produced and maintained by the Eclipse Mosquitto project.
 
  * Project home: https://projects.eclipse.org/projects/iot.mosquitto
 
@@ -27,7 +31,7 @@ SPDX-License-Identifier: EPL-2.0 or BSD-3-Clause
 
 The project maintains the following source code repositories:
 
- * https://github.com/eclipse/mosquitto
+ * https://github.com/bbacburg/mosquitto
 
 ## Third-party Content
 

@@ -1,3 +1,9 @@
+Jacobs Custom Mosquitto
+=================
+
+Jacobs Custom Mosquitto is a modified version of the existing Eclipse Mosquitto software.
+The modified source code can be found at <https://github.com/bbacburg/mosquitto>
+
 Eclipse Mosquitto
 =================
 

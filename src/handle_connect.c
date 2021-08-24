@@ -296,7 +296,7 @@ int connect__on_authorised(struct mosquitto *context, void *auth_data_out, uint1
 	if(rc) return rc;
 	rc = db__message_write_queued_out(context);
 	if(rc) return rc;
-	rc = db__message_write_inflight_out_all(context);
+	//rc = db__message_write_inflight_out_all(context);
 	return rc;
 error:
 	free(auth_data_out);

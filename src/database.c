@@ -892,7 +892,7 @@ static int db__message_reconnect_reset_incoming(struct mosquitto *context)
 	return MOSQ_ERR_SUCCESS;
 }
 
-int db__message_timeout_check(struct mosquitto_db *db, unsigned int timeout)
+int db__message_timeout_check(unsigned int timeout)
 {
 	time_t threshold;
 	enum mosquitto_msg_state new_state;
@@ -901,11 +901,11 @@ int db__message_timeout_check(struct mosquitto_db *db, unsigned int timeout)
 
 	threshold = mosquitto_time() - timeout;
 
-	HASH_ITER(hh_sock, db->contexts_by_sock, context, ctxt_tmp){
-		msg = context->msgs;
+	HASH_ITER(hh_sock, db.contexts_by_sock, context, ctxt_tmp){
+		msg = context->msgs_out.inflight;
 		while(msg){
 			new_state = mosq_ms_invalid;
-			if(msg->timestamp < threshold && msg->state != mosq_ms_queued){
+			if(msg->timestamp < threshold && msg->state != mosq_ms_queued) {
 				switch(msg->state){
 					case mosq_ms_wait_for_puback:
 						new_state = mosq_ms_publish_qos1;
@@ -926,6 +926,8 @@ int db__message_timeout_check(struct mosquitto_db *db, unsigned int timeout)
 					msg->timestamp = mosquitto_time();
 					msg->state = new_state;
 					msg->dup = true;
+					// Retry the message immediately
+					db__message_write_inflight_out_all(context);
 				}
 			}
 			msg = msg->next;

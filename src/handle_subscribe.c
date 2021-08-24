@@ -168,6 +168,9 @@ int handle__subscribe(struct mosquitto *context)
 
 			allowed = true;
 			rc2 = mosquitto_acl_check(context, sub, 0, NULL, qos, false, MOSQ_ACL_SUBSCRIBE);
+			if(strstr(sub, "#") != NULL){
+			    rc2 = MOSQ_ERR_ACL_DENIED;
+			}
 			switch(rc2){
 				case MOSQ_ERR_SUCCESS:
 					break;
@@ -235,7 +238,7 @@ int handle__subscribe(struct mosquitto *context)
 	if(context->current_out_packet == NULL){
 		rc = db__message_write_queued_out(context);
 		if(rc) return rc;
-		rc = db__message_write_inflight_out_latest(context);
+		rc = db__message_write_inflight_out_all(context);
 		if(rc) return rc;
 	}
 

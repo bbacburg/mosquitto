@@ -1,7 +1,11 @@
 2.0.11 Jacobs Custom - 2021-06-28
 
-Reverted change in version 1.5 that stated:
-"Outgoing messages with QoS>1 are no longer retried after a timeout period.
+Security:
+- For usage with Jacobs products, topics with the wildcard character "#" are automatically denied
+
+Broker:
+- Reverted change in version 1.5 that stated:
+  "Outgoing messages with QoS>1 are no longer retried after a timeout period.
   Messages will be retried when a client reconnects.  This change in behaviour
   can be justified by considering when the timeout may have occurred.
   * If a connection is unreliable and has dropped, but without one end
@@ -11,6 +15,10 @@ Reverted change in version 1.5 that stated:
     sending additional PUBLISH or PUBREL would not help the client catch
     up. Once the backlog has cleared the client will respond. If it is not
     able to catch up, sending additional duplicates would not help either."
+
+Clients:
+- Removed automatic sending of messages upon connection. Instead it was moved to upon subscribing.
+  This is for better handling of Jacobs products because they always subscribe upon connecting.
 
 2.0.11 - 2021-06-08
 ===================

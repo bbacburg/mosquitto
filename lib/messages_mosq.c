@@ -285,24 +285,25 @@ void message__retry_check(struct mosquitto *mosq)
 	pthread_mutex_lock(&mosq->msgs_out.mutex);
 #endif
 
-	while(messages){
-		if(messages->timestamp + mosq->message_retry < now){
-			switch(messages->state){
+	msg = mosq->msgs_out.inflight;
+	while(msg){
+		if(msg->timestamp + mosq->message_retry < now){
+			switch(msg->state){
 				case mosq_ms_wait_for_puback:
 				case mosq_ms_wait_for_pubrec:
-					messages->timestamp = now;
-					messages->dup = true;
-					send__publish(mosq, messages->msg.mid, messages->msg.topic, messages->msg.payloadlen, messages->msg.payload, messages->msg.qos, messages->msg.retain, messages->dup);
+					msg->timestamp = now;
+					msg->dup = true;
+					send__publish(mosq, (uint16_t)msg->msg.mid, msg->msg.topic, (uint32_t)msg->msg.payloadlen, msg->msg.payload, (uint8_t)msg->msg.qos, msg->msg.retain, msg->dup, msg->properties, NULL, 0);
 					break;
 				case mosq_ms_wait_for_pubrel:
-					messages->timestamp = now;
-					messages->dup = true;
-					send__pubrec(mosq, messages->msg.mid);
+					msg->timestamp = now;
+					msg->dup = true;
+					send__pubrec(mosq, (uint16_t)msg->msg.mid, 0, NULL);
 					break;
 				case mosq_ms_wait_for_pubcomp:
-					messages->timestamp = now;
-					messages->dup = true;
-					send__pubrel(mosq, messages->msg.mid);
+					msg->timestamp = now;
+					msg->dup = true;
+					send__pubrel(mosq, (uint16_t)msg->msg.mid, NULL);
 					break;
 				default:
 					break;
@@ -318,7 +319,9 @@ void message__retry_check(struct mosquitto *mosq)
 void mosquitto_message_retry_set(struct mosquitto *mosq, unsigned int message_retry)
 {
 	assert(mosq);
-	if(mosq) mosq->message_retry = message_retry;
+	if(mosq) {
+   	    mosq->message_retry = message_retry;
+	}
 }
 
 int message__out_update(struct mosquitto *mosq, uint16_t mid, enum mosquitto_msg_state state, int qos)
